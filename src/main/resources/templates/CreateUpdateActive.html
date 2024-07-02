@@ -1,0 +1,261 @@
+<!-- This is a modal to create or update an active -->
+
+<!-- Agregar un * al final de cada campo que sea obligatorio, por ejemplo Id del activo* -->
+<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	</head>
+	<body>
+		<div class="modal fade" id="CreateUpdateActive" tabindex="-1" 
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" 
+		th:fragment="modal(id)" th:id="${id}">  
+		<div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Añadir activo/eliminar</h5>
+		        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+				<div class="container">
+					<!-- 1st row -->
+					<div class="row"> 
+						<div class="col-6">
+							<div class="d-flex flex-column">
+							    <label for="NewIdActive">Id del activo</label>
+							    <input type="number"
+								class="form-control" 
+								name="NewIdActive" 
+								id="NewIdActive">
+								<p id="errorNewIdActive" style="color:red;">ID existente/no permitido</p>
+							</div>
+						</div>
+					
+						<div class="col-6">
+							<div class="d-flex flex-column">
+							    <label for="NewActiveName">Nombre del activo</label>
+							    <input type="text" 
+								class="form-control" 
+								name="NewActiveName" 
+								id="NewActiveName">
+								<p id="errorNewActiveName" style="color:red;">Caracteres no permitidos</p>
+							</div>
+						</div>
+					</div>
+					
+					<!-- 2nd row -->
+					<div class="row">
+						<div class="col-4">
+							<div class="d-flex flex-column">
+							    <label for="ActiveValue" class="small-text">Valor de la factura</label>
+								<input type="text" class="form-control" name="ActiveValue" id="ActiveValue" value="$" onchange="this.value = parseFloat(this.value.replace('$', '')).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })">
+							</div>
+						</div>
+						
+						<div class="col-4">
+							<div class="d-flex flex-column">
+							    <label for="IvaValue" class="small-text">IVA</label>
+								<input type="text" 
+								class="form-control" 
+								name="IvaValue" id="IvaValue" 
+								value="$0.00" 
+								disabled>
+							</div>
+						</div>
+						
+						<div class="col-4">
+							<div class="d-flex flex-column">
+							    <label for="valueDepreciated" class="small-text">Valor depreciado</label>
+								<input type="text" 
+								class="form-control" 
+								name="valueDepreciated" id="valueDepreciated" 
+								value="$" onchange="this.value = parseFloat(this.value.replace('$', '')).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })">
+							</div>
+						</div>
+					</div>
+					
+					<!-- 3rd row -->
+					<div class="row">
+						<div class="col-6">
+							<div class="d-flex flex-column">
+								<label for="purchaseDate" class="small-text">Fecha de adquisición</label>
+								<input type="date" class="form-control" name="purchaseDate" id="purchaseDate">
+							</div>
+						</div>
+						
+						<div class="col-6">
+							<div class="d-flex flex-column">
+								<label for="activeLocation" class="small-text">Ubicación</label>
+								<select class="form-select" aria-label="Default select example" id="activeLocation">
+								  <option selected>Seleccionar</option>
+								  <option value="1">Estado de México</option>
+								  <option value="2">CDMX</option>
+								  <option value="uso remoto">Uso remoto</option> <!-- quitar esto despues (1) -->
+							  	</select>							
+							</div>
+						</div>
+					</div>
+					
+					<!-- 4th row -->
+					<div class="row">
+						<div class="col-6">
+							<div class="d-flex flex-column">
+								<label for="activeStatus" class="small-text">Estatus del activo</label>
+								<select class="form-select" aria-label="Default select example" id="activeStatus">
+								  <option selected>Seleccionar</option>
+								  <option value="en uso">En uso</option>
+								  <option value="almacenado">Almacenado</option>
+								  <option value="no encontrado">No encontrado</option>
+							  	</select>							
+							</div>
+						</div>
+					
+						<div class="col-6">
+							<div class="d-flex flex-column">
+								<label for="activeChecked" class="small-text">Revisado</label>
+								<input type="date" class="form-control" name="activeChecked" id="activeChecked">
+							</div>
+						</div>
+					</div>
+					
+					<!-- 5th row -->
+					<div class="row">
+						<div class="col-4">
+							<div class="d-flex flex-column">
+								<label for="activeDetails" class="small-text">Detalles</label>
+								<select class="form-select" aria-label="Default select example" id="activeDetails">
+                                  <option selected>Seleccionar</option>
+                                  <option value="buen estado">Buen estado</option>
+                                  <option value="mal estado">Mal estado</option>
+                              	</select>
+							</div>
+						</div>
+						
+						<div class="col-8">
+							<div class="d-flex flex-column">
+								<label for="activeDescription" class="small-text">Descripción</label>
+								<textarea class="form-control" id="activeDescription" rows="3"></textarea>
+							</div>
+						</div>
+					</div>
+					
+					<br>
+					
+					<div id="remoteForm"> <!-- remoteForm -->
+						<!-- 6th row -->
+						<div class="row">
+							<div class="col-12">
+								<h4 for="remoteId">Equipo en uso remoto</h4>
+							</div>
+						</div>
+						
+						<!-- 7th row -->
+						<div class="row">
+							<div class="col-4">
+								<div class="d-flex flex-column">
+									<label for="">Id empleado</label>
+									<input type="number"
+									class="form-control" 
+									name="newIdOwner" 
+									id="newIdOwner">
+								</div>
+							</div>		
+							
+							<div class="col-8">
+								<div class="d-flex flex-column">
+									<label for="">Nombre empleado</label>
+									<input type="text"
+									class="form-control" 
+									name="newNameOwner" 
+									id="newNameOwner">
+								</div>
+							</div>						
+						</div>
+						
+						<!-- 8th row -->
+						<div class="row">
+							<div class="col-4">
+                                <div class="d-flex flex-column">
+                                    <label for="">Calle</label>
+                                    <input type="text"
+                                    class="form-control" 
+                                    name="newStreetOfOwnerLocation" 
+                                    id="newStreetOfOwnerLocation">
+                                </div>
+							</div>
+							
+							<div class="col-4">
+							    <div class="d-flex flex-column">
+							        <label for="">Numero</label>
+							        <input type="number"
+							        class="form-control" 
+							        name="newNumber" 
+							        id="newNumberOfOwnerLocation">
+							    </div>
+							</div>
+							
+							<div class="col-4">
+							    <div class="d-flex flex-column">
+							        <label for="">Colonia</label>
+							        <input type="text"
+							        class="form-control" 
+							        name="newColonyOfOwnerLocation" 
+							        id="newColonyOfOwnerLocation">
+							    </div>
+							</div>
+						</div>
+						
+						<!-- 9th row -->
+						<div class="row">
+							<div class="col-4">
+						        <div class="d-flex flex-column">
+						            <label for="">Municipio</label>
+						            <input type="text"
+						            class="form-control" 
+						            name="newCityOfOwnerLocation" 
+						            id="newCityOfOwnerLocation">
+						        </div>
+							</div>
+							
+							<div class="col-4">
+							    <div class="d-flex flex-column">
+							        <label for="">Estado</label>
+							        <input type="text"
+							        class="form-control" 
+							        name="newStateOfOwnerLocation" 
+							        id="newStateOfOwnerLocation">
+							    </div>
+							</div>
+							
+							<div class="col-4">
+							    <div class="d-flex flex-column">
+							        <label for="">C.P</label>
+							        <input type="number"
+							        class="form-control" 
+							        name="newCpOfOwnerLocation" 
+							        id="newCpOfOwnerLocation">
+							    </div>
+							</div>
+						</div>
+				</div>
+			  </div>
+		      <div class="modal-footer">
+				<!-- Button to close the modal and redirect to activos page -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				<div id="showButtonToAddActive">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="buttonToSaveActive">Agregar activo</button>
+				</div> 
+				<div id="showButtonToUpdateActive">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="buttonToActive">Actualizar activo</button>
+				</div>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	</body>
+</html>
