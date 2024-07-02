@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Website</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script th:src="@{/SearchOwnerInfo.js}"></script>
+	<script th:src="@{/DeleteActive.js}"></script>
+	<script th:src="@{/CreateUpdateActive.js}"></script>
+	<script th:src="@{/activos.js}"></script>
+	<link rel="stylesheet" th:href="@{/style.css}">
+  </head>
+  <body>
+	
+	<div class="container">
+		<form method="GET" th:action="@{/consult}">
+
+		
+		<!-- 1st row -->
+		<div class="row justify-content-md-center">
+			<div class="col-md-auto">
+				<h1>Sistema de gestión de activos fijos código geek</h1>
+			</div>
+		</div>
+		
+		 <!-- 2nd row -->
+		<div class="row">
+			<div class="col-4">
+				<!-- Search by name -->
+				<div class="input-group mb-3">
+					<input type="text" class="form-control" placeholder="Por nombre" name="nombre">
+					
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="submit">Buscar</button>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-4">
+				<!-- Search by date -->
+		    	<input id="startDate" class="form-control" type="date" placeholder="YYYY-MM-DD" name="fecha_inicial"/>
+				<input id="startDate" class="form-control" type="date" placeholder="YYYY-MM-DD" name="fecha_final"/>
+			</div>
+			
+			<div class="col-2">
+				<!-- Search by place -->
+				<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <label class="input-group-text" for="inputGroupSelect01">Ubicación</label>
+				  </div>
+				  <select class="custom-select" id="inputGroupSelect01" name="ubicacion">
+					<option value="0">Cualquiera</option>
+				    <option value="1">CDMX</option>
+				    <option value="2">EDOMEX</option>
+				    <option value="3">Uso remoto</option>
+				  </select>
+				</div>
+			</div>
+			
+			<div class="col-2">
+				<!-- Search by status -->
+				<div class="input-group mb-3">
+			    <div class="input-group-prepend">
+			    	<label class="input-group-text" for="inputGroupSelect02">Estatus del activo</label>
+			    </div>
+			        <select class="custom-select" id="inputGroupSelect02" name="status">
+						<option value="0">Cualquiera</option>
+			            <option value="1">En uso</option>
+			            <option value="2">Descompuesto</option>
+			            <option value="3">Almacenado</option>
+			            <option value="4">No encontrado</option> 
+			        </select>
+			    </div>
+			</div>
+		</div>
+		<!-- 3rd row -->
+		<div class="row justify-content-md-end">
+			<div class="col-md-auto">
+                <button type="button" 
+				class="btn btn-primary"
+				id="activateButtonToSaveActive"
+				data-bs-toggle="modal" data-bs-target="#CreateUpdateActive">
+					Agregar activo
+				</button>
+			</div>
+		</div>
+		
+		<!-- 4th row -->
+		<div class="row">
+			<div class="col">
+				<div class="col" th:if="${activos.isEmpty()}">
+				    <p>No se encontraron registros o hubo un error en la base de datos</p>
+				</div>
+				<div class="col-12" th:if="${not activos.empty}">
+				    <table class="table table-bordered table-hover">
+				        <thead class="thead-dark">
+				            <tr>
+				                <th scope="col">ID</th>
+				                <th scope="col">Nombre del activo</th>
+				                <th scope="col">Valor total factura</th>
+				                <th scope="col">Monto del IVA</th>
+				                <th scope="col">Valor depreciado<br>(al día de hoy)</th>
+				                <th scope="col">Fecha de adquisición</th>
+				                <th scope="col">Estatus</th>
+				                <th scope="col">Detalle</th>
+				                <th scope="col">Descripción</th>
+				                <th scope="col">Ubicación</th>
+				                <th scope="col">Revisado</th>
+				                <th scope="col">Acciones</th>
+				            </tr>
+				        </thead>
+				        <tbody th:each="activo: ${activos}">
+				            <tr>
+				                <td th:text="${activo.IdActivo}"></td>
+				                <td th:text="${activo.nombre}"></td>
+				                <td th:text="${activo.total}"></td>
+				                <td th:text="${activo.IVA}"></td>
+				                <td th:text="${activo.valor_depreciado}"></td>
+				                <td th:text="${activo.fecha_adqui}"></td>
+				                <td th:text="${activo.status}"></td>
+				                <td th:text="${activo.detalle}"></td>
+				                <td th:text="${activo.descripcion}"></td>
+								<td>
+									<a th:if="${activo.ubicacion != 'CDMX' &amp;&amp; activo.ubicacion != 'Estado de Mexico' &amp;&amp; activo.status != 'no encontrado'}" 
+									   href="#" 
+									   class="OwnerSearchButton"
+									   th:data-parametro="${activo.IdActivo}"
+									   data-bs-toggle="modal" data-bs-target="#ShowOwner">
+									   Uso remoto (ver)
+									</a>
+								    <span th:if="${activo.ubicacion == 'CDMX' || activo.ubicacion == 'Estado de Mexico'}" th:text="${activo.ubicacion}"></span>
+									<span th:if="${activo.status == 'no encontrado'}">No encontrado</span>
+								</td>
+								<td th:text="${activo.fecha_revisado}"></td>
+								
+								<!-- Actions --> 
+								
+								<td>
+									<button type="button" 
+										class="btn btn-primary ActiveUpdateButton"
+										style="display: inline-block;"
+										id="activateButtonToUpdateActive"
+										th:data-param="${activo.IdActivo}"
+										data-bs-toggle="modal" data-bs-target="#CreateUpdateActive">
+									 	Editar
+								 	</button>
+
+								    <button type="button" 
+										class="btn btn-danger" 
+										style="display: inline-block"
+										th:data-parametro="${activo.IdActivo}"
+										data-bs-toggle="modal" data-bs-target="#ActiveDeleteConfirm">
+											Eliminar
+									</button>
+								</td>
+				            </tr>
+				        </tbody>
+				    </table>
+				</div>
+			</div>
+		</div>
+		<!-- 5th row -->
+		<div class="row justify-content-center">
+		    <div class="col-auto">
+				 <div th:if="${not #lists.isEmpty(activos)}" class="pagination">
+		            <ul class="list-inline">
+		                <li th:each="pageNumber : ${pageNumbers}" class="d-inline mx-1">
+		                    <a th:href="@{/consult(page=${pageNumber}, size=${activos.size}, nombre=${nombre}, status=${status}, ubicacion=${ubicacion}, fecha_inicial=${fecha_inicial}, fecha_final=${fecha_final})}"
+		                       th:text="${pageNumber}" 
+		                       class="btn btn-outline-secondary"></a>
+		                </li>
+		            </ul>
+		        </div>
+		    </div>
+		</div>
+		</form>
+		
+		
+		<!-- Modal fragment, show active's owner -->
+		<th:block th:replace="~{ShowOwner.html :: modal('ShowOwner')}"></th:block>
+		
+		<!-- Modal fragment, show a message if sure to delete an active -->
+		<th:block th:replace="~{ActiveDeleteConfirm.html :: modal('ActiveDeleteConfirm')}"></th:block>
+
+		<!-- Modal fragment, show a message if active was able or unable to be deleted -->
+		<th:block th:replace="~{ActiveDeletedMessage.html :: modal('ActiveDeletedMessage')}"></th:block>
+
+		<!-- Modal fragment, show a modal to create or update an active -->
+		<th:block th:replace="~{CreateUpdateActive.html :: modal('CreateUpdateActive')}"></th:block>
+
+	</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</html>
